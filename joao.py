@@ -6,6 +6,7 @@ MEU_BANCO = create_engine("sqlite:///meubanco.db")
 
 Session = sessionmaker(bind=MEU_BANCO)
 session = Session()
+lista_funcionario = []
 
 Base = declarative_base()
 
@@ -34,48 +35,69 @@ Base.metadata.create_all(bind=MEU_BANCO)
 
 os.system("cls || clear")
 
-print("Solicitandos dados para o funcionário")
-inserir_nome = input("Digite o seu nome: ")
-inserir_idade = int(input("Digite sua idade: "))
-inserir_cpf = int(input("Digite o seu CPF: "))
-inserir_setor = int(input("Digite o seu setor: "))
-inserir_funcao = input("Digite sua função: ")
-inserir_salario = int(input("Digite seu salário: "))
-inserir_telefone = int(input("Digite seu telefone: "))
+def limpar_tela():
+    os.system("cls || clear")
 
-funcionario = Funcionario(nome=inserir_nome, idade=inserir_idade, cpf=inserir_cpf, setor=inserir_setor, funcao=inserir_funcao, salario=inserir_salario, telefone=inserir_telefone)
-session.add(funcionario)
-session.commit()
+def menu():
+    print("""
+    1 - Adicionar um funcionário
+    2 - Consultar um funcionário
+    3 - Atualizar os dados de um funcionário
+    4 - Excluir um funcionário 
+    5 - Listar todos os funcionários
+    0 - Sair do sistema.     
+          """) 
+    
+while True:
+    menu()
+    opcao = input("Digite um número: ")
+    match opcao:
+        case "1":
+            nome = input("Digite seu nome: ")
+            idade = int(input("Digite sua idade: "))
+            cpf_funcionario = int(input("Digite seu CPF: "))
+            setor = int(input("Digite seu setor: "))
+            funcao = input("Digite sua função: ")
+            salario = int(input("Digite seu salário: "))
+            telefone = int(input("Digite seu telefone: "))
 
-print("\nExcluindo um funcionário.")
-cpf_funcionario = int(input("Informe o CPF do funcionário para ser exlcuído: "))
+        case "2":
+            cpf_funcionario = int(input("Digite seu CPF: "))
+            lista_funcionario = session.query(Funcionario).filter_by(cpf = cpf_funcionario).first()
+            for funcionario in lista_funcionario:
+                print(f"{funcionario.id} - {funcionario.nome} - {funcionario.idade} - {funcionario.cpf} - {funcionario.setor} - {funcionario.funcao} - {funcionario.salario} - {funcionario.telefone}")
+            limpar_tela()
 
-funcionario = session.query(funcionario).filter_by(cpf = cpf_funcionario).first()
-session.delete(funcionario)
-session.commit()
-print("Funcionário excluído com sucesso.")
+        case "3":
+            cpf_funcionario = int(input("Digite seu CPF: "))
+            funcionario = session.query(Funcionario).filter_by(cpf = cpf_funcionario).first()
 
-print("\nExibindo todos os funcionários do banco de dados.")
-lista_funcionarios = session.query(Funcionario).all()
+            novos_dados = Funcionario(
+            nome = input("Digite seu nome: "),
+            idade = int(input("Digite sua idade: ")),
+            cpf_funcionario = int(input("Digite seu CPF: ")),
+            setor = input("Digite seu setor: "),
+            funcao = input("Digite sua função: "),
+            salario = float(input("Digite seu salário: ")),
+            telefone = int(input("Digite seu telefone: "))
+            )
 
-for funcionario in lista_funcionarios:
-    print(f"{funcionario.id} - {funcionario.nome} - {funcionario.idade} - {funcionario.cpf} - {funcionario.setor} - {funcionario.funcao} - {funcionario.salario} - {funcionario.telefone}")
+            funcionario = novos_dados
+            session.add(funcionario)
+            session.commit
+            print("Funcionário atualizado.")
+            limpar_tela()
 
-print("\nAtualizando dados do funcionário.")
-funcionario = session.query(Funcionario).filter_by(cpf = cpf_funcionario).first()
+        case "4":
+            cpf_funcionario = int(input("Digite o CPF: "))
+            funcionario = session.query(Funcionario).filter_by(cpf = cpf_funcionario).first()
+            session.delete(funcionario)
+            session.commit()
+            print("Funcionário excluído.")
+            limpar_tela()
 
-novos_dados =  Funcionario(
-    nome = input("Digite seu nome: "),
-    idade = int(input("Digite sua idade: ")),
-    cpf = int(input("Digite seu CPF: ")),
-    setor = int(input("Digite seu setor: ")),
-    funcao = input("Digite sua função: "),
-    salario = int(input("Digite seu salário: ")),
-    telefone = int(input("Digite seu telefone: "))
-)
-
-funcionario = novos_dados
-session.add(funcionario)
-session.commit()
-
-session.close()
+        case "5":
+            limpar_tela()
+        
+        case "0":
+            break
