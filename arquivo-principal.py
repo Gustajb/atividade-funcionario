@@ -68,15 +68,15 @@ while True:
             salario = float(input("Digite o salário: "))
             telefone = input("Digite o telefone: ")
             
-            funcionario = Funcionario(nome=nome, idade=idade, cpf=cpf_usuario, setor=setor, funcao=funcao, salario=salario, telefone=telefone)
+            funcionario = Funcionario(nome=nome, idade=idade, cpf=cpf_funcionario, setor=setor, funcao=funcao, salario=salario, telefone=telefone)
             session.add(funcionario)
             session.commit()
             print("Funcionário adicionado com sucesso.")
             limpar_tela()
 
         case "2": 
-            cpf_funcionario = int(input("Digite o CPF: "))
-            funcionario = session.query(Funcionario).filter_by(cpf=cpf_usuario).first()
+            cpf_funcionario = int(input("Digite seu CPF: "))
+            funcionario = session.query(Funcionario).filter_by(cpf=cpf_funcionario).first()
             
             if funcionario:
                 print(f"CPF: {funcionario.cpf}, Nome: {funcionario.nome}, Idade: {funcionario.idade}, Setor: {funcionario.setor}, Função: {funcionario.funcao}, Salário: {funcionario.salario}, Telefone: {funcionario.telefone}")
@@ -88,7 +88,7 @@ while True:
 
         case "3":  # Atualizar funcionário
             cpf_funcionario = int(input("Digite o CPF do funcionário que deseja atualizar: "))
-            funcionario = session.query(Funcionario).filter_by(cpf=cpf_usuario).first()
+            funcionario = session.query(Funcionario).filter_by(cpf=cpf_funcionario).first()
             
             if funcionario:
                 funcionario.nome = input(f"Digite o novo nome (atual: {funcionario.nome}): ") or funcionario.nome
