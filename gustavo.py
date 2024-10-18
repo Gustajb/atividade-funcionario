@@ -1,59 +1,59 @@
-print("Solicitando dados para o usuário")
+import os
+from sqlalchemy import create_engine, Column, String, Integer, Float
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-inserir_nome = input("Digite seu nome: ")
-inserir_idade = int(input("Digite sua idade: "))
-inserir_cpf = int(input("Digite seu cpf: "))
-inserir_setor = int(input("Digite seu setor: "))
-inserir_funcao = input("Digite sua função: ")
-inserir_salario = int(input("Digite seu salãrio: "))
-inserir_telefone = int(input("Digite seu telefone: "))
+# Criando banco de dados.
+MEU_BANCO = create_engine("sqlite:///meubanco.db")
 
-funcionario = Funcionario(nome=inserir_nome, idade=inserir_idade, cpf=inserir_cpf, setor=inserir_setor, 
-funcao=inserir_funcao, salario=inserir_salario, telefone=inserir_telefone )
-session.add(funcionario)
-session.commit()
+# Criando conexão com banco de dados.
+Session = sessionmaker(bind=MEU_BANCO)
+session = Session()
 
-# Delete
-print("\nExcluindo um funcionário.")
-email_usuario = input("Informe o cpf do usuário para ser excluído:")
+# Criando tabela.
+Base = declarative_base()
 
-funcionario = session.query(Funcionario).filter_by(cpf = cpf_funcionario).first()
-session.delete(funcionario)
-session.commit()
-print("Funcionário excluido com sucesso.")
+class Funcionario(Base):
+    __tablename__ = "funcionario"
+    
+    nome = Column("nome", String)
+    idade = Column("idade", Integer)
+    cpf = Column("cpf", Integer, primary_key=True)
+    setor = Column("setor", String)
+    funcao = Column("funcao", String)
+    salario = Column("salario", Float)
+    telefone = Column("telefone", String)
+    
+    def __init__(self, nome, idade, cpf, setor, funcao, salario, telefone):
+        self.nome = nome
+        self.idade = idade
+        self.cpf = cpf
+        self.setor = setor
+        self.funcao = funcao
+        self.salario = salario
+        self.telefone = telefone
+        
+# Criando tabela no banco de dados.
+Base.metadata.create_all(bind=MEU_BANCO)
 
-# Listando todos os usuários do banco de dados.
-print("\nExibindo todos os usuários do banco de dados")
-lista_funcionarios = session.query(Funcionario).all()
+# Função para limpar a tela
+def limpar_tela():
+    os.system("cls || clear")
 
-# Read
-for funcionario in lista_funcionarios:
-   print(f"{funcionario.id} - {funcionario.nome} - {funcionario.idade} - {funcionario.cpf} - 
-         {funcionario.setor} - {funcionario.funcao} - {funcionario.salario} - {funcionario.telefone}")
+# Função para exibir o menu
+def menu():
+    print("="*40)
+    print(f"{'RH System':^40}")
+    print("="*40)
+    print("""
+    1 - Adicionar um funcionário
+    2 - Consultar um funcionário
+    3 - Atualizar os dados de um funcionário
+    4 - Excluir um funcionário 
+    5 - Listar todos os funcionários
+    0 - Sair do sistema.     
+          """)
 
-# Update.
-print("\nAtualizando dados do usuário.")
-usuario = session.query(Funcionario).filter_by(cpf = cpf_funcionario).first()
-
-novos_dados = Funcionario(
-    print("Solicitando dados para o usuário")
-    inserir_nome = input("Digite seu nome: ")
-    inserir_idade = int(input("Digite sua idade: "))
-    inserir_cpf = int(input("Digite seu cpf: "))
-    inserir_setor = int(input("Digite seu setor: "))
-    inserir_funcao = input("Digite sua função: ")
-    inserir_salario = int(input("Digite seu salãrio: "))
-    inserir_telefone = int(input("Digite seu telefone: "))
-)
-funcionario = Funcionario(nome=inserir_nome, idade=inserir_idade, cpf=inserir_cpf, setor=inserir_setor, 
-                          funcao=inserir_funcao, salario=inserir_salario, telefone=inserir_telefone)
-session.add(usuario)
-session.commit()
-
-funcionario = novos_dados
-session.add(funcionario)
-session.commit()
-
-# Fechando conexão.
-session.close()
-
+# Loop principal do sistema
+while True:
+    menu()
+    opcao = input("Digite o número da opção: ")
